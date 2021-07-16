@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+          <meta charset="UTF-8">
+          <meta http-equiv="X-UA-Compatible" content="IE=edge">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+          <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+          
+          <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+          <title>Conditional Rendering</title>
+</head>
+<body>
+
+        <div id="root"></div>
+        <!-- 
+        Describe d read route in react:
+        d read route is majorly found in d 
+        render() method of react.
+        child components are also used for read route 
+
+
+        Describe d post route in react:
+        to post, get d value coming from d input box using setState
+        and in anoda method equate d input value to d appropriate item.
+        In post, u need value 4rm d initial state and onChange of d targeted value
+        In d btn, u need to post d added value from d input box
+
+        Describe d delete route in react:
+        to delete, select a particular item and dn filter all d given items except d one u v selected
+        using setState
+        pass ur method to d child component and use ur method outside d parent component as a prop
+
+        Describe d update route in react: 
+        d update route here is in 4m of a toggle. select d item by using find()
+        filter via d elements in d arr for d selected item to remain dn,
+        concat it into its new section by changing d boolean value
+        -->
+
+       
+        
+
+        <script type= "text/babel">
+                // childs component
+                class ActiveFriends extends React.Component {
+                        render() { 
+                                return ( 
+                                        <div>
+                                                <h2>Active Friends: </h2>    
+                                                
+                                                <ul>
+                                                        {
+                                                                this.props.list.map(item =>  
+                                                                        <li key={item.name}>
+                                                                                <span> { item.name } </span>        
+
+                                                                                <button 
+                                                                                        onClick={() => this.props.del(item.name)}
+                                                                                >
+                                                                                        Delete</button>
+                                                                                <button 
+                                                                                        onClick = {() => this.props.toggle(item.name)}
+                                                                                >
+                                                                                        Deactivate
+                                                                                </button>
+                                                                        </li>
+                                                                )
+                                                        }        
+                                                </ul>
+                                        </div>
+                                )
+                        }
+                }
+                 
+                class InActiveFriends extends React.Component {
+                        render() { 
+                                return ( 
+                                        <div>
+                                                <h2>Inactive Friends: </h2>      
+                                                
+                                                <ul>
+                                                        {
+                                                                this.props.list.map(item => 
+                                                                        <li key={item.name}>
+                                                                                <span> { item.name } </span>        
+                                                                                
+                                                                        </li>
+                                                                )
+                                                        }        
+                                                </ul>
+
+                                        </div>
+                                )
+                        }
+                }
+
+                // parent component
+                class Friends extends React.Component {
+                        constructor(props) {
+                                super(props);
+
+                                this.state = { 
+                                        friends: [
+                                                {
+                                                        name: 'Jordyn',
+                                                        active: true,
+                                                },
+
+                                                {
+                                                        name: 'Mikenzi',
+                                                        active: true,
+                                                },
+
+                                                {
+                                                        name: 'Jake',
+                                                        active: false
+                                                },
+
+                                                {
+                                                        name: 'Jumoke',
+                                                        active: false
+                                                },
+
+                                                {
+                                                        name: 'Janet',
+                                                        active: true
+                                                },
+
+                                                {
+                                                        name: 'Jordan',
+                                                        active: true
+                                                }
+                                        ],
+
+                                        input: ''
+                                }
+                        }
+
+                        // post
+                        // get what is coming from input
+                        getInputValue = (enve) => {
+                                let value = enve.target.value
+
+                                this.setState({
+                                        input: value
+                                })
+                        }
+
+                        postFrds = () => {
+                                this.setState(currState => {
+                                        return (
+                                                {
+                                                        friends: currState.friends.concat(
+                                                                [
+                                                                       {
+                                                                                name: this.state.input,
+                                                                                active: true
+                                                                       }
+                                                                ]
+                                                        )
+                                                }
+                                               
+                                        )
+                                })
+
+                        }
+
+                        // delete
+                        delFrd = (namedFrd) => {
+                                this.setState(curr => {
+                                        return (
+                                                {
+                                                        friends: curr.friends.filter(item => item.name !== namedFrd)
+                                                }
+                                        )
+                                })
+                        }
+
+                        // update
+                        updateFrdList = (mosaic) => {
+                                
+                                this.setState(curr => {
+
+                                        // select d particular named frd
+                                        let selectedFrd = curr.friends.find(item => item.name == mosaic)
+
+                                        return (
+                                                {
+                                                        friends: curr.friends
+                                                                .filter(item => item.name !== mosaic)
+                                                                .concat(
+                                                                        [
+                                                                                {
+                                                                                        name: mosaic,       //or mosaic
+                                                                                        active: !selectedFrd.active
+                                                                                }
+                                                                        ]
+                                                                )
+                                                }
+                                        )
+                                })
+                        }
+
+
+                        render() { 
+                                return (  
+                                        <div>
+                                                <h1>Welcome Friends</h1>   
+
+                                                <input 
+                                                        type="text"
+                                                        placeholder="Enter name ..........."
+                                                        value = {this.state.input}
+                                                        onChange = {this.getInputValue}
+                                                
+                                                />
+                                                
+                                                <button
+                                                        onClick = {this.postFrds}
+                                                >
+                                                        Submit
+                                                </button>
+                                                                                
+                                                <div>
+                                                        <button>Clear</button>        
+                                                </div>
+
+                                                <ActiveFriends 
+                                                        list = {this.state.friends.filter(item => item.active == true)}
+                                                        del = {this.delFrd}
+                                                        toggle = {this.updateFrdList}
+                                                />
+
+                                                <InActiveFriends 
+                                                        list = {this.state.friends.filter(item => item.active == false)}
+                                                        toggle = {this.updateFrdList}
+                                                />
+                                        </div>
+                                );
+                        }
+                }
+                 
+
+                ReactDOM.render(
+                        <Friends />,
+                        document.getElementById('root')
+                )
+        </script>
+
+</body>
+
+</html>
